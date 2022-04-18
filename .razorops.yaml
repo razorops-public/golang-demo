@@ -21,7 +21,7 @@ tasks:
         cp .env.example .env
         export $(cat .env| xargs)
         cd server
-        # export DB_CONNECTION=mongodb://${DB_USER}:${DB_PASS}@${DB_HOST}:27017/${DB_NAME}
+        export DB_CONNECTION=mongodb://${DB_USER}:${DB_PASS}@${DB_HOST}:27017/${DB_NAME}
         # export DB_NAME=${DB_NAME}
         echo $DB_CONNECTION
         echo $DB_NAME
