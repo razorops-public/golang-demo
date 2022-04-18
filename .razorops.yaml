@@ -13,7 +13,7 @@ tasks:
     container: golang:1.14.4-stretch
     steps:
     - checkout
-    - commands: 
+    - commands:
       -|
         cd server
         export DB_CONNECTION=mongodb://${DB_USER}:${DB_PASS}@${DB_HOST}:27017/${DB_NAME}
