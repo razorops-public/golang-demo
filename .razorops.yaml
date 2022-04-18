@@ -2,15 +2,17 @@ global:
   runner: 
     containers:
     - image: razorci/golang:1.14
-      # environment:
-      # - DB_CONNECTION=mongodb://${DB_USER}:${DB_PASS}@${DB_HOST}:27017/test
-      # - DB_NAME=${DB_NAME}
     - image: bitnami/mongodb:4.4.1
       environment:
-      - MONGODB_ROOT_PASSWORD=${DB_ROOT_PASS}
-      - MONGODB_DATABASE=${DB_NAME}
-      - MONGODB_USERNAME=${DB_USER}
-      - MONGODB_PASSWORD=${DB_PASS}
+      # - MONGODB_ROOT_PASSWORD=${DB_ROOT_PASS}
+      # - MONGODB_DATABASE=${DB_NAME}
+      # - MONGODB_USERNAME=${DB_USER}
+      # - MONGODB_PASSWORD=${DB_PASS}
+
+      - MONGODB_ROOT_PASSWORD=adminpass
+      - MONGODB_DATABASE=test
+      - MONGODB_USERNAME=appuser
+      - MONGODB_PASSWORD=apppass
 
 tasks:
   test:
@@ -18,14 +20,11 @@ tasks:
     - checkout
     - commands:
       - |
-        cp .env.example .env
-        export $(cat .env| xargs)
         cd server
         export DB_CONNECTION=mongodb://${DB_USER}:${DB_PASS}@${DB_HOST}:27017/${DB_NAME}
-        export DB_HOST=localhost
-        # export DB_NAME=${DB_NAME}
+        export DB_NAME=${DB_NAME}
         echo $DB_CONNECTION
         echo $DB_NAME
         go mod download
-        go run main.go
-        # go test ./...
+        go mod tidy
+        go test ./...
