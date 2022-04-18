@@ -1,6 +1,10 @@
 global:
   runner: 
     containers:
+    - image: razorci/golang:1.14
+      environment:
+      - DB_CONNECTION=mongodb://${DB_USER}:${DB_PASS}@${DB_HOST}:27017/${DB_NAME}
+      - DB_NAME=${DB_NAME}
     - image: bitnami/mongodb:4.4.1
       environment:
       - MONGODB_ROOT_PASSWORD=${DB_ROOT_PASS}
@@ -10,7 +14,6 @@ global:
 
 tasks:
   test:
-    container: golang:1.14.4
     steps:
     - checkout
     - commands:
