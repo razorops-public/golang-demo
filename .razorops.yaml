@@ -3,17 +3,18 @@ global:
     containers:
     - image: bitnami/mongodb:4.4.1
       environment:
-      - MONGODB_ROOT_PASSWORD: ${DB_ROOT_PASS}
-      - MONGODB_DATABASE: ${DB_NAME}
-      - MONGODB_USERNAME: ${DB_USER}
-      - MONGODB_PASSWORD: ${DB_PASS}
+      - MONGODB_ROOT_PASSWORD=${DB_ROOT_PASS}
+      - MONGODB_DATABASE=${DB_NAME}
+      - MONGODB_USERNAME=${DB_USER}
+      - MONGODB_PASSWORD=${DB_PASS}
 
 tasks:
   test:
     container: golang:1.14.4-stretch
     steps:
     - checkout
-    - commands: -|
+    - commands: 
+      -|
         cd server
         export DB_CONNECTION=mongodb://${DB_USER}:${DB_PASS}@${DB_HOST}:27017/${DB_NAME}
         export DB_NAME=${DB_NAME}
