@@ -10,7 +10,7 @@ global:
 
 tasks:
   test:
-    container: golang:1.14.4-stretch
+    container: golang:1.14.4
     steps:
     - checkout
     - commands:
