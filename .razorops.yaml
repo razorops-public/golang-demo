@@ -13,7 +13,6 @@ global:
       - MONGODB_DATABASE=test
       - MONGODB_USERNAME=appuser
       - MONGODB_PASSWORD=apppass
-
 tasks:
   test:
     steps:
@@ -21,10 +20,9 @@ tasks:
     - commands:
       - |
         cd server
-        export DB_CONNECTION=mongodb://${DB_USER}:${DB_PASS}@${DB_HOST}:27017/${DB_NAME}
-        export DB_NAME=${DB_NAME}
+        export DB_CONNECTION=mongodb://appuser:apppass@localhost:27017/test
+        export DB_NAME=test
         echo $DB_CONNECTION
         echo $DB_NAME
         go mod download
-        go mod tidy
         go test ./...
