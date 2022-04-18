@@ -46,15 +46,21 @@ services:
       DB_NAME: ${DB_NAME}
     image: todo/go-to-do-api:rc
   db:
+    networks:
+      - todo
     image: bitnami/mongodb:${DB_IMAGE_TAG}
-    volumes:
-      - db-data:/bitnami/mongodb
+    # volumes:
+    #   - db-data:/bitnami/mongodb
     environment:
       MONGODB_ROOT_PASSWORD: ${DB_ROOT_PASS}
       MONGODB_DATABASE: ${DB_NAME}
       MONGODB_USERNAME: ${DB_USER}
       MONGODB_PASSWORD: ${DB_PASS}
 
-volumes:
-  db-data:
-  env-js:
+networks:
+  todo:
+    driver: bridge
+
+# volumes:
+#   db-data:
+#   env-js:
