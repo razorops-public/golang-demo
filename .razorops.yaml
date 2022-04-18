@@ -2,9 +2,9 @@ global:
   runner: 
     containers:
     - image: razorci/golang:1.14
-      environment:
-      - DB_CONNECTION=mongodb://${DB_USER}:${DB_PASS}@${DB_HOST}:27017/test
-      - DB_NAME=${DB_NAME}
+      # environment:
+      # - DB_CONNECTION=mongodb://${DB_USER}:${DB_PASS}@${DB_HOST}:27017/test
+      # - DB_NAME=${DB_NAME}
     - image: bitnami/mongodb:4.4.1
       environment:
       - MONGODB_ROOT_PASSWORD=${DB_ROOT_PASS}
@@ -19,6 +19,8 @@ tasks:
     - commands:
       - |
         cd server
+        export DB_CONNECTION=mongodb://${DB_USER}:${DB_PASS}@${DB_HOST}:27017/${DB_NAME}
+        export DB_NAME=${DB_NAME}
         echo $DB_CONNECTION
         echo $DB_NAME
         go mod download
