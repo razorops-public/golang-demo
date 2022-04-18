@@ -19,6 +19,7 @@ tasks:
     - commands:
       - |
         cd server
+        docker network ls
         export DB_CONNECTION=mongodb://${DB_USER}:${DB_PASS}@${DB_HOST}:27017/${DB_NAME}
         export DB_NAME=${DB_NAME}
         go mod download
