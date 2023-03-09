@@ -28,9 +28,9 @@ tasks:
     steps:
     - checkout
     - docker/build:
-        image: registry.digitalocean.com/transpora/web
+        image: saurabh3460/golang-demo
         push: true
-        tags: ["${CI_COMMIT_SHA:0:8}", "${CI_REPO_BRANCH}", "latest"]
+        tags: ["${CI_COMMIT_SHA:0:8}", "latest"]
     # - workspace/persist:
     #     paths: [bin]
 

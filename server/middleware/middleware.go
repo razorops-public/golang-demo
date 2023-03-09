@@ -130,7 +130,8 @@ func DeleteAllTask(w http.ResponseWriter, r *http.Request) {
 
 // GetHealth of the app - useful for probes
 func GetHealth(w http.ResponseWriter, r *http.Request) {
-	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(map[string]int{"Status": http.StatusOK})
+	// w.WriteHeader(http.StatusOK)
 }
 
 // get all task from the DB and return it

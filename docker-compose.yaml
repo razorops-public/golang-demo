@@ -44,7 +44,9 @@ services:
     environment:
       DB_CONNECTION: mongodb://${DB_USER}:${DB_PASS}@${DB_HOST}:27017/${DB_NAME}
       DB_NAME: ${DB_NAME}
-    image: todo/go-to-do-api:rc
+    image: saurabh3460/golang-demo
+    networks:
+      - todo
   db:
     networks:
       - todo
