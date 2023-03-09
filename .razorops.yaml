@@ -20,3 +20,38 @@ tasks:
         cd server
         go mod download
         go test ./...
+    - workspace/persist:
+        paths: [bin]
+
+  build-image:
+    depends: [test]
+    steps:
+    - checkout
+    - docker/build:
+        image: registry.digitalocean.com/transpora/web
+        push: true
+        tags: ["${CI_COMMIT_SHA:0:8}", "${CI_REPO_BRANCH}", "latest"]
+    # - workspace/persist:
+    #     paths: [bin]
+
+  deploy-argocd:
+    depends: [build-image]
+    when: branch == "release-dev"
+    variables:
+    - ARGOCD_SERVER=argocd.codecrux.com
+    - APP_NAME=transpora-transpora
+    - DOCKER_TAG=${CI_COMMIT_SHA:0:8}
+    - ARGOCD_VERSION=v2.5.9
+    steps:
+    - commands:
+      - |
+        kubectl config use-context argocd
+        curl -sSL -o argocd https://github.com/argoproj/argo-cd/releases/download/$ARGOCD_VERSION/argocd-linux-amd64
+        chmod +x argocd
+      - ./argocd app --grpc-web set $APP_NAME --helm-set-string image.tag.web=$DOCKER_TAG --helm-set-string image.repositoryProject=registry.digitalocean.com/transpora
+      - ./argocd app --grpc-web sync $APP_NAME
+      - ./argocd app --grpc-web wait $APP_NAME --timeout 600
+
+trigger:
+  when: branch == "release-dev"
+
