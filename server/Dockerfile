@@ -1,5 +1,5 @@
 # stage - build
-FROM golang:1.14.4-stretch as build
+FROM golang:1.21-bookworm as build
 WORKDIR /code
 # copy package manifest(less-frequent changing layer)
 COPY go.mod go.sum ./
@@ -10,7 +10,7 @@ COPY . .
 RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o /go/bin/todo
 
 # stage - release
-FROM gcr.io/distroless/base-debian10 as release
+FROM gcr.io/distroless/base-debian12 as release
 # FROM alpine:3.12 as release
 COPY --from=build --chown=1001:0 /go/bin/todo /bin/todo
 EXPOSE 8080
