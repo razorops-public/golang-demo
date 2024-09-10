@@ -1,7 +1,7 @@
 global:
   runner: 
     containers:
-    - image: razorci/golang:1.14
+    - image: razorci/golang:1.21
       environment:
       - DB_CONNECTION=mongodb://appuser:apppass@localhost:27017/test
       - DB_NAME=test
@@ -11,12 +11,18 @@ global:
       - MONGODB_DATABASE=test
       - MONGODB_USERNAME=appuser
       - MONGODB_PASSWORD=apppass
+
 tasks:
   test:
     steps:
     - checkout
+    - cache/pull:
+        key: go-mod-{{ checksum "server/go.sum" }}
     - commands:
       - |
         cd server
-        go mod download
+        go mod download -json
         go test ./...
+    - cache/push:
+        key: go-mod-{{ checksum "server/go.sum" }}
+        paths: [$GOPATH/pkg/mod]
