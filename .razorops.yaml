@@ -22,7 +22,16 @@ tasks:
       - |
         cd server
         go mod download -json
-        go test ./...
+        go test -coverprofile=coverage.out ./...
+      - mkdir coverage && go tool cover -html=coverage.out -o coverage/index.html
+    - commands:
+      - go install github.com/jstemmer/go-junit-report@latest && go-junit-report --version
+      - cat test.out | go-junit-report -set-exit-code > report.xml
+    - reports/html:
+        name: cover
+        dir: coverage/index.html
+    - reports/junit:
+      - report.xml
     - cache/push:
         key: go-mod-{{ checksum "server/go.sum" }}
         paths: [$GOPATH/pkg/mod]
