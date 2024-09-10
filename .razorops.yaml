@@ -1,7 +1,7 @@
 global:
   runner: 
     containers:
-    - image: razorci/golang:1.14
+    - image: razorci/golang:1.21
       environment:
       - DB_CONNECTION=mongodb://appuser:apppass@localhost:27017/test
       - DB_NAME=test
@@ -11,12 +11,33 @@ global:
       - MONGODB_DATABASE=test
       - MONGODB_USERNAME=appuser
       - MONGODB_PASSWORD=apppass
+
 tasks:
   test:
     steps:
     - checkout
+    - cache/pull:
+        key: go-mod-{{ checksum "server/go.sum" }}
     - commands:
       - |
         cd server
-        go mod download
-        go test ./...
+        go mod download -json
+        go test -coverprofile=coverage.out ./... | tee test.out
+      - mkdir coverage && go tool cover -html=coverage.out -o coverage/index.html
+    - commands:
+      - go install github.com/jstemmer/go-junit-report@latest && go-junit-report --version
+      - cat test.out | go-junit-report -set-exit-code > report.xml
+    ## upload test reports for dashboard
+    - reports/html:
+        name: cover
+        dir: coverage/index.html
+    - reports/junit:
+      - report.xml
+    ## cache go modules for faster run
+    - cache/push:
+        key: go-mod-{{ checksum "go.sum" }}
+        paths: [$GOPATH/pkg/mod]
+    ## check vulnerabilities
+    - commands:
+      - go install golang.org/x/vuln/cmd/govulncheck@latest && govulncheck --version
+      - govulncheck ./...
